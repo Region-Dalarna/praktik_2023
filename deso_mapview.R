@@ -12,3 +12,16 @@ mapview(deso)
 # Save the spatial dataset
 st_write(deso, "G:/Samhällsanalys/GIS/projekt/GIS-praktik/Waleed_Liv/Praktik_2023/deso_dalarna.gpkg")
 
+
+
+#Tar bort alla kommungränser med Dissolve
+
+deso_utan_kom <- deso %>%
+  group_by(lan) %>%
+  summarize(geometry = st_union(geom))
+
+
+#Buffer
+dalarna_buffer <- st_buffer(deso_utan_kom, 10000)
+mapview(dalarna_buffer)+
+  mapview(deso, zcol = "kommun")
