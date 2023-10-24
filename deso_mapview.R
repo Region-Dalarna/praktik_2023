@@ -5,9 +5,14 @@ library(dplyr)
 deso_fil <- "DeSo_2018_v2.gpkg"
 
 deso <- st_read(deso_fil, crs = 3006) %>% 
-  filter(lan == '20')
+  filter(lan == '20') %>% 
+  select(deso, kom_kod = kommun, kommun = kommunnamn)
 
-mapview(deso)
+deso_kom <- deso %>% 
+  group_by(kom_kod) %>% 
+  summarize(geometry = st_union(geom))
+
+mapview(deso_kom)
 
 # Save the spatial dataset
 st_write(deso, "G:/Samhällsanalys/GIS/projekt/GIS-praktik/Waleed_Liv/Praktik_2023/deso_dalarna.gpkg")
@@ -19,6 +24,8 @@ st_write(deso, "G:/Samhällsanalys/GIS/projekt/GIS-praktik/Waleed_Liv/Praktik_20
 deso_utan_kom <- deso %>%
   group_by(lan) %>%
   summarize(geometry = st_union(geom))
+
+
 
 
 #Buffer
